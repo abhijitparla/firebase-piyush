@@ -3,16 +3,23 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import React, { useState } from 'react'
 import {app} from '../../app/firebase'
 import { getAuth } from 'firebase/auth'
+import { useFirebase } from '../context/Firebase'
+import { useRouter } from 'next/navigation'
 
 const auth = getAuth(app)
 
 const Signup = () => {
+
+  const firebase = useFirebase()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const router = useRouter()
     const handleSumit = (e) => {
         e.preventDefault()
-        console.log("inside handle sumbit", email, password)
-        createUserWithEmailAndPassword(auth, email, password).then((value) => console.log(value))
+        console.log("inside handle sumbit", email, password, firebase)
+        firebase.signupWithEmailAndPassword(email, password)
+        router.push('/signin')
+        // createUserWithEmailAndPassword(auth, email, password).then((value) => console.log(value))
     }
 
   return (

@@ -1,9 +1,32 @@
 "use client";
-// import React, { useState } from 'react'
 
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { app } from "../firebase";
+import { useFirebase } from "../context/Firebase";
+import { useRouter } from "next/navigation";
+
+const auth = getAuth(app)
+// import React, { useState } from 'react'
 const Signin = () => {
-  // const [email, setEmail] = useState("")
-  // const [password, setPassword] = useState("")
+    const firebase = useFirebase()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const router = useRouter()
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log("handle submit ", email, password)
+    try {
+      signInWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        const user = userCredential.user
+        console.log("inside auth",user)
+      }) 
+      router.push("/")
+    } catch (error) {
+      
+    }
+  }
   return (
     <div className="bg-gray-900">
       <section className="bg-gray-900 dark:bg-gray-900">
@@ -34,7 +57,7 @@ const Signin = () => {
                 </a>
                 .
               </p>
-              <form className="mt-4 space-y-6 sm:mt-6" action="#">
+              <form className="mt-4 space-y-6 sm:mt-6" onSubmit={handleSubmit}>
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -47,6 +70,8 @@ const Signin = () => {
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="name@company.com"
                       required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div>
@@ -60,6 +85,8 @@ const Signin = () => {
                       placeholder="••••••••"
                       className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
                 </div>
@@ -74,6 +101,7 @@ const Signin = () => {
                   <a
                     href="#"
                     className="w-full inline-flex items-center justify-center py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    onClick={firebase.singInWithGoogle}
                   >
                     <svg
                       className="w-5 h-5 mr-2"
